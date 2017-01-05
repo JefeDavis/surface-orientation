@@ -17,7 +17,7 @@ def is_update_available():
 
 def _current_version():
 	try:
-		version = u'v%s' % pkg_resources.get_distribution("orientation").version
+		version = u'v%s' % pkg_resources.get_distribution("Orientation").version
 	except pkg_resources.DistributionNotFound:
 		version = None
 	return version
