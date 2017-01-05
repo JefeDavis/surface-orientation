@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Name=Screen Orientation Controller
+Comment=Allows automatic or locked screen and input orientation based on internal sensors
+Exec=orientation
+Icon=/usr/share/orientation/icons/dark/screen_auto_rotation.svg
+Type=Application
+Terminal=false
+Categories=Utility;TrayIcon;
+OnlyShowIn=GNOME;KDE;LXDE;LXQt;MATE;Razor;ROX;TDE;Unity;XFCE;EDE;Cinnamon;Pantheon;
+StartupNotify=false
+Keywords=Screen,Rotation,Orientation
