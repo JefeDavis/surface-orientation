@@ -22,8 +22,6 @@ eraser = re.findall(r'[0-9][0-9]',str(re.findall(r'id: [0-9][0-9]\\ttype: ERASER
 class OrientationManager(object):
 	def __init__(self):
 		self.path = os.path.abspath(os.path.dirname(os.path.abspath(__file__)))
-		
-
 		self.iiopath = self.getsensor()
 		
 	def set_orientation(self, x, y, z):
