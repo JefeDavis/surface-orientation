@@ -4,29 +4,37 @@ import subprocess
 import time
 import os
 import gi
+import re
 gi.require_version('Notify', '0.7')
 from gi.repository import Notify as notify
 from threading import Thread
 
 rotate = True
-quit = False
+command = "xsetwacom list"
+drivers = subprocess.check_output(command.split())
+#"'NTRG0001:01 1B96:1B05 touch'"
+touch = re.findall(r'[0-9][0-9]',str(re.findall(r'id: [0-9][0-9]\\ttype: TOUCH', str(drivers))))[0]
+#"'NTRG0001:01 1B96:1B05 Pen stylus'"
+pen = re.findall(r'[0-9][0-9]',str(re.findall(r'id: [0-9][0-9]\\ttype: STYLUS', str(drivers))))[0] 
+#"'NTRG0001:01 1B96:1B05 Pen eraser'"
+eraser = re.findall(r'[0-9][0-9]',str(re.findall(r'id: [0-9][0-9]\\ttype: ERASER', str(drivers))))[0]
+
 class OrientationManager(object):
 	def __init__(self):
 		self.path = os.path.abspath(os.path.dirname(os.path.abspath(__file__)))
-		self.touch = '17' #"'NTRG0001:01 1B96:1B05 touch'"
-		self.pen = '16' #"'NTRG0001:01 1B96:1B05 Pen stylus'"
-		self.eraser = '18' #"'NTRG0001:01 1B96:1B05 Pen eraser'"
+		
+
 		self.iiopath = self.getsensor()
 		
 	def set_orientation(self, x, y, z):
 		#Commands for correct rotation
-		normals = ['xrandr -o normal', 'xsetwacom set ' + self.touch + ' rotate none', 'xsetwacom set ' + self.pen + ' rotate none', 'xsetwacom set ' + self.eraser + ' rotate none']
+		normals = ['xrandr -o normal', 'xsetwacom set ' + touch + ' rotate none', 'xsetwacom set ' + pen + ' rotate none', 'xsetwacom set ' + eraser + ' rotate none']
 
-		inverteds = ['xrandr -o inverted', 'xsetwacom set ' + self.touch + ' rotate half', 'xsetwacom set ' + self.pen + ' rotate half', 'xsetwacom set ' + self.eraser + ' rotate half']
+		inverteds = ['xrandr -o inverted', 'xsetwacom set ' + touch + ' rotate half', 'xsetwacom set ' + pen + ' rotate half', 'xsetwacom set ' + eraser + ' rotate half']
 
-		lefts = ['xrandr -o left', 'xsetwacom set ' + self.touch + ' rotate ccw', 'xsetwacom set ' + self.pen + ' rotate ccw', 'xsetwacom set ' + self.eraser + ' rotate ccw']
+		lefts = ['xrandr -o left', 'xsetwacom set ' + touch + ' rotate ccw', 'xsetwacom set ' + pen + ' rotate ccw', 'xsetwacom set ' + eraser + ' rotate ccw']
 
-		rights = ['xrandr -o right', 'xsetwacom set ' + self.touch + ' rotate cw', 'xsetwacom set ' + self.pen + ' rotate cw', 'xsetwacom set ' + self.eraser + ' rotate cw']
+		rights = ['xrandr -o right', 'xsetwacom set ' + touch + ' rotate cw', 'xsetwacom set ' + pen + ' rotate cw', 'xsetwacom set ' + eraser + ' rotate cw']
 
 		if self.checkdisplays() == 1:
 			if (x >= 65000 or x <=650):
