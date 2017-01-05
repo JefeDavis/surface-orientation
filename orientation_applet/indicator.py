@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 import orientation_applet.resource as resource
 import orientation_applet.ui as ui
+import orientation_applet.autoupdate as autoupdate
 import signal
 import sys
 import os
 import gi
 gi.require_version('AppIndicator3', '0.1')
+gi.require_version('Notify', '0.7')
 gi.require_version('Gtk', '3.0')
 from orientation_applet.orientation_controller import OrientationManager
 from gi.repository import AppIndicator3 as appindicator
+from gi.repository import Notify as notify
 from gi.repository import Gtk as gtk
 from threading import Event as event
-
-#import autorotate.ui
-#import autorotate.resource
 
 #PARAMETERS
 appindicator_ID = 'screen_orientation_indicator'
@@ -45,7 +45,18 @@ class OrientationIndicator(object):
 
 	def quit(self, item):
 		self._shutdown()
+
+	def open_about_page(self, item):
+		import webbrowser
+		webbrowser.open('https://github.com/virtualguywithabowtie/surface-orientation')
 	
+	def check_for_updates(self):
+		if autoupdate.is_update_available():
+			UpdateAvailable=notify.Notification.new ("Orientation Update","A newer version of Orientation is available on GitHub. "+\
+				"Open 'About' to navigate to the project page.")
+		UpdateAvailable.show()
+		UpdateAvailable.unint()
+		
 	def run(self):
 		gtk.main()
 
@@ -59,6 +70,7 @@ class OrientationIndicator(object):
 		toggle_button.connect("toggled", self.toggle, indicator)
 		indicator.set_secondary_activate_target(toggle_button)
 		add_item(gtk.SeparatorMenuItem())
+		add_item(gtk.MenuItem('About')).connect("activate", self.open_about_page)
 		add_item(gtk.MenuItem("Exit")).connect("activate", self.quit)
 		return menu
 
