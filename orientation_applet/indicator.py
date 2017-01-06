@@ -37,6 +37,14 @@ class OrientationIndicator(object):
 			indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
 			rotate_toggle_mgr.enable_auto_rotate()
 	
+	def palm_toggle(item,self,indicator):
+		rotate_palm_mgr = OrientationManager()
+		if self.get_active():
+			rotate_palm_mgr.palm_detection(True)
+		else:
+			rotate_palm_mgr.palm_detection(False)
+			
+			
 	def _shutdown(self):
 		self.alive.clear()
 		try:
@@ -71,6 +79,10 @@ class OrientationIndicator(object):
 		toggle_button.connect("toggled", self.toggle, indicator)
 		indicator.set_secondary_activate_target(toggle_button)
 		add_item(gtk.SeparatorMenuItem())
+		palm_toggle_button = add_item(gtk.CheckMenuItem("Palm Rejection"))
+		palm_toggle_button.connect('toggled', self.palm_toggle, indicator)
+ 		palm_toggle_button.set_active(True)
+
 		add_item(gtk.MenuItem('About')).connect("activate", self.open_about_page)
 		add_item(gtk.MenuItem("Exit")).connect("activate", self.quit)
 		return menu

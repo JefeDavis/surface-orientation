@@ -10,6 +10,8 @@ from gi.repository import Notify as notify
 from threading import Thread
 
 rotate = True
+previous_state = 0
+current_state = 0
 command = "xsetwacom list"
 drivers = subprocess.check_output(command.split())
 #"'NTRG0001:01 1B96:1B05 touch'"
@@ -36,35 +38,22 @@ class OrientationManager(object):
 		self.path = os.path.abspath(os.path.dirname(os.path.abspath(__file__)))
 		self.iiopath = self.getsensor()
 		
-	def set_orientation(self, x, y, z):
+	def set_orientation(self, direction):
 		#Commands for correct rotation
-		normals = ['xrandr -o normal', 'xsetwacom set ' + touch + ' rotate none', 'xsetwacom set ' + pen + ' rotate none', 'xsetwacom set ' + eraser + ' rotate none']
+		if direction == 'normal':
+			pen_rotate = 'none'
+		elif direction == 'inverted':
+			pen_rotate = 'half'
+		elif direction == 'left':
+			pen_rotate = 'ccw'
+		elif direction == 'right':
+			pen_rotate = 'cw'
 
-		inverteds = ['xrandr -o inverted', 'xsetwacom set ' + touch + ' rotate half', 'xsetwacom set ' + pen + ' rotate half', 'xsetwacom set ' + eraser + ' rotate half']
+		rotate_commands = ['xrandr -o ' + direction, 'xsetwacom set ' + touch + ' rotate ' + pen_rotate, 'xsetwacom set ' + pen + ' rotate ' + pen_rotate, 'xsetwacom set ' + eraser + ' rotate ' + pen_rotate]
 
-		lefts = ['xrandr -o left', 'xsetwacom set ' + touch + ' rotate ccw', 'xsetwacom set ' + pen + ' rotate ccw', 'xsetwacom set ' + eraser + ' rotate ccw']
+		for command in rotate_commands: 
+			subprocess.call(command.split(), shell=False)
 
-		rights = ['xrandr -o right', 'xsetwacom set ' + touch + ' rotate cw', 'xsetwacom set ' + pen + ' rotate cw', 'xsetwacom set ' + eraser + ' rotate cw']
-
-		if self.checkdisplays() == 1:
-			if (x >= 65000 or x <=650):
-				if (y <= 65000 and y >= 64000):
-					for normal in normals: 
-						subprocess.call(normal.split(), shell=False)
-					self.current_state = 0
-				if (y >= 650 and y <= 1100):
-					for inverted in inverteds:
-						subprocess.call(inverted.split(), shell=False)
-					self.current_state = 1
-			if (x <= 64999 and x >= 650):
-				if (x >= 800 and x <= 1000):
-					for left in lefts:
-						subprocess.call(left.split(), shell=False)
-					self.current_state = 2
-				if (x >= 64500 and x <=64700):
-					for right in rights:					
-						subprocess.call(right.split(), shell=False)
-					self.current_state = 3
 
 	def enable_auto_rotate(self):
 		global rotate
@@ -80,9 +69,19 @@ class OrientationManager(object):
 		RotationOFF=notify.Notification.new ("Rotation","Screenrotation is now locked",resource.image_path("screen_lock_rotation", "dark"))
 		RotationOFF.show ()
 
-	def refreshtouch(self):
-		subprocess.call('xinput disable',self.touch)
-		subprocess.call('xinput enable',self.touch)
+	def palm_detection(self, enable):
+		status = enable
+		stylusProximityCommand = 'xinput query-state ' + pen
+		stylusProximityResult = subprocess.check_output(stylusProximityCommand.split(), shell=False)
+		stylusProximityStatus = re.findall('In|Out', stylusProximityResult)[0]		
+		if stylusProximityStatus == "out" and status == True:
+			subprocess.call('xinput enable', touch)
+		elif stylusProximityStatus == "in" and status == True:
+			subprocess.call('xinput disable', touch)
+
+	#def refreshtouch(self):
+		#subprocess.call(['xinput disable', touch], shell=False)
+		#subprocess.call(['xinput enable', touch], shell=False)
 
 	def checkdisplays(self):
 		check_displays = "xrandr | grep -w 'connected'"
@@ -91,9 +90,10 @@ class OrientationManager(object):
 		int_displays = len(list_displays)
 		return int_displays
 
-	def initiate_fetcher(self, parent):
+	def initiate_fetcher(self, parent):		
 		self._fetcher = StatusFetcher(parent)
 		self._fetcher.start()
+		
 
 
 	def getsensor(self):
@@ -106,13 +106,14 @@ class OrientationManager(object):
 
 
 	def get_orientation(self):
-		current_state = 0
+		global previous_state
+		global current_state
+		state_dict = {0: "normal", 1: "inverted", 2: "left", 3: "right"}
 		iiopath = self.getsensor()
 		multimonitor = False
 		int_displays = self.checkdisplays()
 		if int_displays > 1:
 			multimonitor = True
-		previous_state = current_state
 		with open(self.iiopath + 'in_accel_scale') as f:
 			scale = float(f.readline())
 		if rotate == True and multimonitor == False:
@@ -122,9 +123,21 @@ class OrientationManager(object):
 						xcoord = float(fx.readline())
 						ycoord = float(fy.readline())
 						zcoord = float(fz.readline())
-						self.set_orientation(xcoord,ycoord,zcoord)
-		if current_state != previous_state:
-			self.refreshtouch()
+						if self.checkdisplays() == 1:
+							if (xcoord >= 65000 or xcoord <=650):
+								if (ycoord <= 65000 and ycoord >= 64000):
+									current_state = 0					
+									if (ycoord >= 650 and ycoord <= 1100):
+										current_state = 1
+							if (xcoord <= 64999 and xcoord >= 650):
+								if (xcoord >= 800 and xcoord <= 1000):
+									current_state = 2
+								if (xcoord >= 64500 and xcoord <=64700):
+									current_state = 3	
+			if current_state != previous_state:
+				previous_state = current_state
+				self.set_orientation(state_dict[current_state])
+#				self.refreshtouch()
 
 class StatusFetcher(Thread):
 	def __init__(self, parent):
