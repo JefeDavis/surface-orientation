@@ -17,6 +17,7 @@ Main features:
 	On install this program will replace your 10-evdev.conf and 50-wacom.conf files
 	located at `/usr/share/X11/xorg-conf.d/`.
 	Your old files will be saved in .bak format within the same direcotry 
+	AFTER INSTALL REBOOT YOUR DEVICE SO THAT THE DRIVERS MAY TAKE EFFECT. 				
 
 To install Orientation run
 	
