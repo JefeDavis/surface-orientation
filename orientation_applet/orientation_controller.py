@@ -72,7 +72,6 @@ class OrientationManager(object):
 		notify.init ("Rotation-ON")
 		RotationON=notify.Notification.new ("Rotation","Screenrotation is now unlocked",resource.image_path("screen_auto_rotation", "dark"))
 		RotationON.show ()
-		notify.unint ("Rotation-ON")
 
 	def disable_auto_rotate(self):
 		global rotate		
@@ -80,7 +79,6 @@ class OrientationManager(object):
 		notify.init ("Rotation-Off")
 		RotationOFF=notify.Notification.new ("Rotation","Screenrotation is now locked",resource.image_path("screen_lock_rotation", "dark"))
 		RotationOFF.show ()
-		notify.unit ("Rotation-Off")
 
 	def refreshtouch(self):
 		subprocess.call('xinput disable',self.touch)
