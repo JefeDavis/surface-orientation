@@ -22,6 +22,7 @@ doquit = False
 class OrientationIndicator(object):
 	def __init__(self):
 		self.setup_indicator()
+		self.check_for_updates()
 		self.alive = event()
 		self.alive.set()
 		self.rotate_mgr = OrientationManager()
@@ -52,10 +53,10 @@ class OrientationIndicator(object):
 	
 	def check_for_updates(self):
 		if autoupdate.is_update_available():
+			notify.init("Update-Available")
 			UpdateAvailable=notify.Notification.new ("Orientation Update","A newer version of Orientation is available on GitHub. "+\
 				"Open 'About' to navigate to the project page.")
-		UpdateAvailable.show()
-		UpdateAvailable.unint()
+			UpdateAvailable.show()
 		
 	def run(self):
 		gtk.main()
