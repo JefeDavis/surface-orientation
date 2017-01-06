@@ -20,7 +20,7 @@ Main features:
 
 To install Orientation run
 	
-	$ sudo pip install git+https://github.com/virtualguywithabowtie/surface-orientation.git
+	$ sudo -H pip install git+https://github.com/virtualguywithabowtie/surface-orientation.git
 
 If you do not have `pip` you may install it by running
 
