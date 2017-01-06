@@ -24,7 +24,7 @@ def install_driver():
 
 install_driver()
 setup(name="Orientation",
-      version="1.0.0",
+      version="1.0.1",
       description="Auto Orientation Indicator for Ubuntu on Surface",
       url='https://github.com/vguywithabowtie/orientation',
       author='VirtualGuywithaBowTie',
