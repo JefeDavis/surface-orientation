@@ -13,12 +13,24 @@ rotate = True
 command = "xsetwacom list"
 drivers = subprocess.check_output(command.split())
 #"'NTRG0001:01 1B96:1B05 touch'"
-touch = re.findall(r'[0-9][0-9]',str(re.findall(r'id: [0-9][0-9]\\ttype: TOUCH', str(drivers))))[0]
-#"'NTRG0001:01 1B96:1B05 Pen stylus'"
-pen = re.findall(r'[0-9][0-9]',str(re.findall(r'id: [0-9][0-9]\\ttype: STYLUS', str(drivers))))[0] 
-#"'NTRG0001:01 1B96:1B05 Pen eraser'"
-eraser = re.findall(r'[0-9][0-9]',str(re.findall(r'id: [0-9][0-9]\\ttype: ERASER', str(drivers))))[0]
+touch = re.findall(r'[0-9][0-9]',str(re.findall(r'id: [0-9][0-9]\\ttype: TOUCH', str(drivers))))
+if touch == []:
+	touch = re.findall(r'[0-9][0-9]',str(re.findall(r'id: [0-9][0-9]\ttype: TOUCH', str(drivers))))[0]
+else:
+	touch = touch[0]
 
+#"'NTRG0001:01 1B96:1B05 Pen stylus'"
+pen = re.findall(r'[0-9][0-9]',str(re.findall(r'id: [0-9][0-9]\\ttype: STYLUS', str(drivers))))
+if pen == []:
+	pen = re.findall(r'[0-9][0-9]',str(re.findall(r'id: [0-9][0-9]\ttype: STYLUS', str(drivers))))[0]
+else:
+	pen = pen[0] 
+#"'NTRG0001:01 1B96:1B05 Pen eraser'"
+eraser = re.findall(r'[0-9][0-9]',str(re.findall(r'id: [0-9][0-9]\\ttype: TOUCH', str(drivers))))
+if eraser == []:
+	eraser = re.findall(r'[0-9][0-9]',str(re.findall(r'id: [0-9][0-9]\ttype: ERASER', str(drivers))))[0]
+else:
+	eraser = eraser[0]
 class OrientationManager(object):
 	def __init__(self):
 		self.path = os.path.abspath(os.path.dirname(os.path.abspath(__file__)))
