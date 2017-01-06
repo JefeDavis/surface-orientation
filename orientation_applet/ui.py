@@ -19,7 +19,7 @@ def __pixel_at(x, y):
     buf = gdk.pixbuf_get_from_window(root_window, x, y, 1, 1)
     pixels = buf.get_pixels()
     if type(pixels) == type(""):
-        rgb = tuple([int(byte.encode('hex'), 16) for byte in pixels])
+        rgb = tuple([int(byte.encode('hex'), 16) for byte in pixels])[0:3]
     else:
         rgb = tuple(pixels)[0:3]
     return rgb
