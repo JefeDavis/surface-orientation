@@ -2,7 +2,7 @@
 
 import os
 import shutil
-from distutils.core import setup
+from setuptools import setup
 
 from orientation_applet.resource import RESOURCES_DIRECTORY_PATH
 
@@ -26,7 +26,7 @@ def install_driver():
 
 install_driver()
 setup(name="Orientation",
-      version="1.2.2",
+      version="1.3.0",
       description="Auto Orientation Indicator for Ubuntu on Surface",
       url='https://github.com/vguywithabowtie/orientation',
       author='VirtualGuywithaBowTie',
