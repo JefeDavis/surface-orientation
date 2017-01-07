@@ -15,22 +15,23 @@ def find_resources(resource_dir):
 
 def install_driver():
 	path = os.path.abspath(os.path.dirname(os.path.abspath(__file__)))
-	#FILE_EVDEV = '/usr/share/X11/xorg.conf.d/10-evdev.conf'
-	FILE_WACOM = '/etc/X11/xorg.conf.d/52-wacom.conf'				
+	FILE_DIR = '/etc/X11/xorg.conf.d/'
+	FILE_WACOM = FILE_DIR + '52-wacom.conf'
 	#if os.path.isfile(FILE_EVDEV):
 	#	os.rename(FILE_EVDEV,FILE_EVDEV + '.bak')
+	if not os.path.exists(FILE_DIR):
+        	os.makedirs(FILE_DIR)
 	if os.path.isfile(FILE_WACOM):
 		os.rename(FILE_WACOM,FILE_WACOM + '.bak')
 	shutil.copy(os.path.join(path, 'drivers/52-wacom.conf'),FILE_WACOM)
-	#shutil.copy(os.path.join(path, 'drivers/10-evdev.conf'),FILE_EVDEV)
 
 install_driver()
 setup(name="Orientation",
-      version="2.0.1",
+      version="2.0.2",
       description="Auto Orientation Indicator for Ubuntu on Surface",
       url='https://github.com/vguywithabowtie/orientation',
       author='VirtualGuywithaBowTie',
-      author_email='mr.jefedavis@gmail.com',
+      author_email='virtualguywithabowtie@users.noreply.github.com',
       license='GNU',
       packages=["orientation_applet"],
       data_files=[
