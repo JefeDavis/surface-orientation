@@ -81,7 +81,7 @@ class OrientationIndicator(object):
 		add_item(gtk.SeparatorMenuItem())
 		palm_toggle_button = add_item(gtk.CheckMenuItem("Palm Rejection"))
 		palm_toggle_button.connect('toggled', self.palm_toggle, indicator)
- 		palm_toggle_button.set_active(True)
+		palm_toggle_button.set_active(True)
 
 		add_item(gtk.MenuItem('About')).connect("activate", self.open_about_page)
 		add_item(gtk.MenuItem("Exit")).connect("activate", self.quit)
