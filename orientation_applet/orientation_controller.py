@@ -73,15 +73,15 @@ class OrientationManager(object):
 		status = enable
 		stylusProximityCommand = 'xinput query-state ' + pen
 		stylusProximityResult = subprocess.check_output(stylusProximityCommand.split(), shell=False)
-		stylusProximityStatus = re.findall('In|Out', stylusProximityResult)[0]		
+		stylusProximityStatus = re.findall('In|Out', str(stylusProximityResult))[0]		
 		if stylusProximityStatus == "out" and status == True:
-			subprocess.call('xinput enable', touch)
+			subprocess.call(['xinput enable', touch])
 		elif stylusProximityStatus == "in" and status == True:
-			subprocess.call('xinput disable', touch)
+			subprocess.call(['xinput disable', touch])
 
-	#def refreshtouch(self):
-		#subprocess.call(['xinput disable', touch], shell=False)
-		#subprocess.call(['xinput enable', touch], shell=False)
+	def refreshtouch(self):
+		subprocess.call(['xinput disable', touch], shell=False)
+		subprocess.call(['xinput enable', touch], shell=False)
 
 	def checkdisplays(self):
 		check_displays = "xrandr | grep -w 'connected'"
@@ -137,7 +137,7 @@ class OrientationManager(object):
 			if current_state != previous_state:
 				previous_state = current_state
 				self.set_orientation(state_dict[current_state])
-#				self.refreshtouch()
+				self.refreshtouch()
 
 class StatusFetcher(Thread):
 	def __init__(self, parent):
