@@ -75,13 +75,13 @@ class OrientationManager(object):
 		stylusProximityResult = subprocess.check_output(stylusProximityCommand.split(), shell=False)
 		stylusProximityStatus = re.findall('In|Out', str(stylusProximityResult))[0]		
 		if stylusProximityStatus == "out" and status == True:
-			subprocess.call(['xinput enable', touch])
-		elif stylusProximityStatus == "in" and status == True:
-			subprocess.call(['xinput disable', touch])
+			subprocess.call(['xinput', 'enable', touch],shell=False)		
+elif stylusProximityStatus == "in" and status == True:
+			subprocess.call(['xinput', 'disable', touch],shell=False)
 
 	def refreshtouch(self):
-		subprocess.call(['xinput disable', touch], shell=False)
-		subprocess.call(['xinput enable', touch], shell=False)
+		subprocess.call(['xinput','disable', touch], shell=False)
+		subprocess.call(['xinput', 'enable', touch], shell=False)
 
 	def checkdisplays(self):
 		check_displays = "xrandr | grep -w 'connected'"
