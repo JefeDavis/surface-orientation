@@ -76,7 +76,7 @@ class OrientationManager(object):
 		stylusProximityStatus = re.findall('In|Out', str(stylusProximityResult))[0]		
 		if stylusProximityStatus == "out" and status == True:
 			subprocess.call(['xinput', 'enable', touch],shell=False)		
-elif stylusProximityStatus == "in" and status == True:
+		elif stylusProximityStatus == "in" and status == True:
 			subprocess.call(['xinput', 'disable', touch],shell=False)
 
 	def refreshtouch(self):
